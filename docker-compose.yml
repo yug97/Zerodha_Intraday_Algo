@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  zerodha-algo:
+    build: .
+    container_name: zerodha-intraday-algo
+    ports:
+      - "8000:8000"
+    environment:
+      - KITE_API_KEY=${KITE_API_KEY:-t5dpjo9d4s3l6ax7}
+      - KITE_API_SECRET=${KITE_API_SECRET:-n1v5fdlg4qt9a9hhtuh970j1wuusf156}
+      - CAPITAL=${CAPITAL:-200000}
+      - DEBUG=${DEBUG:-false}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./data.json:/app/data.json
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
